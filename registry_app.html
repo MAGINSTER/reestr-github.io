@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реестр наказаний</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .form-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+        }
+        
+        input, select, textarea {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .table-section {
+            padding: 30px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #667eea;
+            color: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge-active {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .badge-expired {
+            background: #28a745;
+            color: white;
+        }
+        
+        .nickname {
+            font-weight: 700;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Реестр наказаний</h1>
+            <p>Учёт наказаний пользователей</p>
+        </div>
+        
+        <div class="form-section">
+            <form id="registryForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nickname">Никнейм *</label>
+                        <input type="text" id="nickname" required placeholder="Введите никнейм">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addedBy">Кто внёс *</label>
+                        <input type="text" id="addedBy" required placeholder="Имя модератора">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateAdded">Дата вноса *</label>
+                        <input type="date" id="dateAdded" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateExpiry">Дата истечения наказания *</label>
+                        <input type="date" id="dateExpiry" required>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="reason">Причина *</label>
+                    <textarea id="reason" required placeholder="Опишите причину наказания"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-add">+ Добавить запись</button>
+            </form>
+        </div>
+        
+        <div class="table-section">
+            <table id="registryTable">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Никнейм</th>
+                        <th>Кто внёс</th>
+                        <th>Причина</th>
+                        <th>Дата вноса</th>
+                        <th>Дата истечения</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <h3>Записей пока нет</h3>
+                            <p>Добавьте первую запись о наказании, заполнив форму выше</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let records = [];
+        
+        const form = document.getElementById('registryForm');
+        const tableBody = document.getElementById('tableBody');
+        
+        // Устанавливаем сегодняшнюю дату по умолчанию
+        document.getElementById('dateAdded').valueAsDate = new Date();
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU');
+        }
+        
+        function getStatus(expiryDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const expiry = new Date(expiryDate);
+            expiry.setHours(0, 0, 0, 0);
+            
+            if (expiry < today) {
+                return { text: 'Истёк', class: 'badge-expired' };
+            } else {
+                return { text: 'Активен', class: 'badge-active' };
+            }
+        }
+        
+        function renderTable() {
+            if (records.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <h3>Записей пока нет</h3>
+                            <p>Добавьте первую запись о наказании, заполнив форму выше</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = records.map((record, index) => {
+                const status = getStatus(record.dateExpiry);
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><span class="nickname">${record.nickname}</span></td>
+                        <td>${record.addedBy}</td>
+                        <td>${record.reason}</td>
+                        <td>${formatDate(record.dateAdded)}</td>
+                        <td>${formatDate(record.dateExpiry)}</td>
+                        <td><span class="badge ${status.class}">${status.text}</span></td>
+                        <td><button class="btn btn-delete" onclick="deleteRecord(${index})">Удалить</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const record = {
+                nickname: document.getElementById('nickname').value,
+                addedBy: document.getElementById('addedBy').value,
+                reason: document.getElementById('reason').value,
+                dateAdded: document.getElementById('dateAdded').value,
+                dateExpiry: document.getElementById('dateExpiry').value
+            };
+            
+            records.push(record);
+            renderTable();
+            form.reset();
+            
+            // Снова устанавливаем сегодняшнюю дату
+            document.getElementById('dateAdded').valueAsDate = new Date();
+        });
+        
+        function deleteRecord(index) {
+            if (confirm('Вы уверены, что хотите удалить эту запись?')) {
+                records.splice(index, 1);
+                renderTable();
+            }
+        }
+    </script>
+</body>
+</html>
